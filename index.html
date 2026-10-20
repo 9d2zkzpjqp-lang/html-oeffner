@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101935">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="HTML öffnen">
+<meta name="description" content="Eigene HTML-Dateien auf dem iPad direkt öffnen – ohne Upload.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" type="image/png" href="./icon-192.png">
+<title>HTML öffnen · Mein HTML-Öffner</title>
+<style>
+:root {color-scheme: light; --ink:#17233f;--muted:#66728a;--background:#f6f8fc;--surface:#fff;--primary:#314ac7;--primary-hover:#233ab8;--line:#e0e5ef;--soft:#eff2ff;--safe:#136f52;--shadow:0 14px 42px rgba(22,34,74,.085)}
+* { box-sizing:border-box }
+html,body {margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--background);color:var(--ink)}
+button,input,textarea {font:inherit}
+button {cursor:pointer;touch-action:manipulation}
+button:focus-visible,a:focus-visible,summary:focus-visible {outline:3px solid #91a5ff;outline-offset:3px}
+.app {min-height:100dvh;display:flex;flex-direction:column}
+header {padding:18px max(22px,env(safe-area-inset-right)) 18px max(22px,env(safe-area-inset-left));height:75px;display:flex;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#fff}
+.brand{display:flex;align-items:center;gap:12px}.brand-mark{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:var(--soft);color:var(--primary);font-size:19px;font-weight:800;letter-spacing:-1px}.brand-title{font-weight:750;font-size:16px;letter-spacing:-.35px}.brand-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 18px 48px}.center{width:min(650px,100%)}
+.eyebrow{display:inline-flex;gap:7px;align-items:center;color:var(--primary);font-size:12px;font-weight:700;padding:7px 11px;background:var(--soft);border-radius:99px;margin-bottom:19px}
+h1{font-size:clamp(29px,5vw,43px);margin:0 0 10px;letter-spacing:-1.6px;line-height:1.12}p.lead{margin:0 0 28px;font-size:16px;color:var(--muted);line-height:1.58;max-width:550px}
+.picker{background:#fff;border:2px dashed #c6ceed;border-radius:20px;padding:42px 28px;text-align:center;box-shadow:var(--shadow);transition:.2s background,.2s border-color}.picker.drag{background:var(--soft);border-color:var(--primary)}
+.file-illustration{width:63px;height:71px;margin:auto auto 16px;display:grid;place-items:center;color:var(--primary);background:var(--soft);border-radius:14px;font-size:21px;font-weight:800}.picker h2{font-size:19px;letter-spacing:-.5px;margin:0 0 6px}.picker p{color:var(--muted);font-size:14px;margin:0 auto 23px;line-height:1.45}
+.primary{appearance:none;color:white;background:var(--primary);border:1px solid var(--primary);border-radius:12px;padding:14px 19px;font-weight:700;box-shadow:0 7px 18px rgba(49,74,199,.18)}.primary:hover{background:var(--primary-hover)}.secondary{appearance:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 13px;color:var(--ink);font-weight:650}.secondary:hover{background:#f9faff}.small{font-size:13px;padding:9px 12px}.iconButton{border:1px solid var(--line);width:38px;height:38px;border-radius:10px;background:#fff;font-size:19px;color:var(--ink)}
+.buttons{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:16px}.foot{font-size:12px;color:var(--muted);text-align:center;margin-top:16px;line-height:1.55}.foot strong{color:#3a4969}
+.status{margin:13px auto 0;text-align:center;font-size:13px;max-width:570px;line-height:1.5}.status:empty{display:none}.status.error{color:#bd2330}.status.ok{color:var(--safe)}
+.help{margin-top:30px;border:1px solid var(--line);border-radius:15px;background:#fff;overflow:hidden}.help summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:17px 19px;font-size:14px;font-weight:700}.help summary::-webkit-details-marker{display:none}.help summary:after{content:'+';font-size:21px;color:var(--primary)}.help[open] summary:after{content:'−'}.help-content{border-top:1px solid var(--line);padding:19px;font-size:14px;line-height:1.6;color:#46536e}.help-content ol{padding-left:20px}.help-content li+li{margin-top:8px}.help-content code{font-size:12px;overflow-wrap:anywhere;background:#f2f4fa;padding:2px 5px;border-radius:4px}.help-content p{margin:0 0 10px}.help-content button{margin:8px 0}
+.warn{font-size:12px;color:#7c6130;background:#fcf7e9;border:1px solid #f0e4c8;padding:12px;border-radius:11px;margin-top:13px;line-height:1.5}
+.hidden{display:none!important}
+.viewer{flex:1;display:flex;flex-direction:column;min-height:0;height:calc(100dvh - 75px)}.toolbar{display:flex;align-items:center;gap:8px;padding:10px 15px;padding-left:max(15px,env(safe-area-inset-left));padding-right:max(15px,env(safe-area-inset-right));background:#fff;border-bottom:1px solid var(--line);min-height:59px}.current-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}.current-sub{font-size:11px;color:var(--muted);margin-top:3px}.viewer iframe{border:0;display:block;width:100%;flex:1;background:#fff;min-height:0}.toolbar .secondary{white-space:nowrap}
+.clip-panel{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px}.clip-panel h3{margin:0 0 8px;font-size:17px}.clip-panel p{font-size:13px;color:var(--muted);line-height:1.5}.clip-panel textarea{width:100%;border:1px solid #cdd5e5;min-height:116px;border-radius:10px;padding:10px;resize:vertical;font-size:12px}
+footer{font-size:12px;color:var(--muted);text-align:center;padding:10px 18px 20px}
+@media(max-width:530px){header{height:65px}.wrap{padding:25px 15px 33px}.picker{padding:33px 15px}.brand-sub{display:none}.viewer{height:calc(100dvh - 65px)}.toolbar{flex-wrap:wrap}.current-name{flex-basis:100%}.toolbar .secondary{flex:1}.toolbar .iconButton{flex:0 0 40px}.buttons .secondary{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="app">
+ <header><div class="brand"><div class="brand-mark" aria-hidden="true">&lt;/&gt;</div><div><div class="brand-title">HTML öffnen</div><div class="brand-sub">Dein persönlicher HTML-Viewer</div></div></div><button type="button" class="secondary small" id="homeTop" hidden>⌂ Startseite</button></header>
+ <main class="wrap" id="home">
+  <div class="center">
+   <div class="eyebrow">✦ Ohne Hochladen · Direkt auf deinem iPad</div>
+   <h1>HTML-Datei öffnen.<br>Fertig.</h1>
+   <p class="lead">Für kleine HTML-Hilfen, Kopier-Vorlagen, Checklisten und mehr. Datei auswählen – schon kannst du sie benutzen.</p>
+   <div class="picker" id="dropZone"><div class="file-illustration" aria-hidden="true">HTML</div><h2>Welche Datei möchtest du öffnen?</h2><p>Wähle eine HTML-Datei aus der Dateien-App.<br>Auf dem Computer kannst du sie auch hierher ziehen.</p><button class="primary" id="chooseMain">HTML-Datei auswählen</button></div>
+   <div class="buttons"><button class="secondary" id="loadLast" hidden>↺ Zuletzt geöffnete Datei</button><button class="secondary" id="tryDemo">✦ Testseite ausprobieren</button></div>
+   <div class="status" id="status" role="status" aria-live="polite"></div>
+   <div id="clipboardPanel" class="clip-panel hidden"><h3>Aus Zwischenablage öffnen</h3><p>Der Kurzbefehl hat die HTML-Datei in die Zwischenablage kopiert. Tippe unten. Safari kann anschließend eine Bestätigung zum Einfügen verlangen.</p><div class="buttons"><button id="clipboardRead" class="primary">HTML aus Zwischenablage öffnen</button><button class="secondary" id="clipboardToggle">Text manuell einfügen</button></div><div id="manualWrap" class="hidden"><p>Falls das automatische Einfügen nicht funktioniert: Hier lange drücken, „Einsetzen“ wählen und anschließend öffnen.</p><textarea id="manualPaste" spellcheck="false" placeholder="HTML oder Base64-Text hier einfügen …"></textarea><div class="buttons"><button class="secondary" id="manualOpen">Eingefügten Text öffnen</button></div></div></div>
+   <details class="help"><summary>Auf dem iPad einrichten &amp; Kurzbefehl nutzen</summary><div class="help-content">
+   <p><strong>Als App:</strong> Diese Webseite in Safari öffnen → Teilen → „Zum Home-Bildschirm“. Ab dann kannst du sie wie eine App starten.</p>
+   <p><strong>Kurzbefehl für kleine HTML-Dateien:</strong> In der App „Kurzbefehle“ einen neuen Kurzbefehl <em>HTML öffnen</em> anlegen, der über das Teilen-Menü Dateien annimmt:</p>
+   <ol><li>„Base64 codieren“ mit <em>Kurzbefehleingabe</em> als Eingabe (Zeilenumbrüche: <em>Keine</em>).</li><li>Aktion „Text“: <code id="shareCode">https://DEINNAME.github.io/DEIN-REPO/#b64=</code> gefolgt von der magischen Variablen <em>Base64-codiert</em>.</li><li>Aktion „URLs öffnen“ mit dem Ergebnis der Text-Aktion.</li><li>Unter den Kurzbefehldetails „Im Teilen-Menü anzeigen“ aktivieren; Eingabetyp „Dateien“ wählen.</li></ol>
+   <button class="secondary small" id="copyLink">Meine Öffner-Adresse kopieren</button>
+   <p><strong>Alternative für größere Dateien:</strong> Die HTML-Datei auswählen, mit „Base64 codieren“ umwandeln, mit „In Zwischenablage kopieren“ kopieren und danach diese Webseite mit <code id="clipURL">#clip</code> öffnen. Dann „HTML aus Zwischenablage öffnen“ antippen.</p>
+   <div class="warn">Nutze nur HTML-Dateien aus vertrauenswürdigen Quellen. Die HTML-Datei läuft einschließlich JavaScript im Browser. Dateien mit zusätzlichen lokalen Bild-/Skriptdateien lassen sich nicht automatisch vollständig laden. Bei langen URLs kann die Kurzbefehl-Variante scheitern; nutze dann „HTML-Datei auswählen“.</div>
+   </div></details>
+   <div class="foot"><strong>Privat:</strong> HTML-Dateien werden nicht auf GitHub hochgeladen. Sie werden nur auf deinem Gerät verarbeitet. Die zuletzt geöffnete Datei wird lokal für den Schnellzugriff gespeichert.</div>
+  </div>
+ </main>
+ <section class="viewer hidden" id="viewer" aria-label="Geöffnete HTML-Datei"><div class="toolbar"><div class="current-name" id="fileName">Datei<div class="current-sub">Im Browser geöffnet</div></div><button class="secondary small" id="chooseAgain">Andere Datei</button><button class="secondary small" id="reload">↻ Neu laden</button><button class="iconButton" id="closeViewer" title="Zur Startseite" aria-label="Zur Startseite">✕</button></div><iframe id="frame" title="HTML-Datei" allow="clipboard-read; clipboard-write" referrerpolicy="no-referrer"></iframe></section>
+ <footer id="footer">Deine Datei bleibt auf deinem Gerät · Version 1.0</footer>
+ <input id="fileInput" type="file" accept=".html,.htm,text/html" hidden>
+</div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const fileInput=$('fileInput'), home=$('home'), viewer=$('viewer'), frame=$('frame'), status=$('status');
+let activeMarkup='', activeName='';
+function showStatus(message,isError=false){status.textContent=message;status.className='status '+(isError?'error':'ok')}
+function showHome(){viewer.classList.add('hidden');home.classList.remove('hidden');$('homeTop').hidden=true;$('footer').hidden=false;frame.removeAttribute('srcdoc');frame.src='about:blank';activeMarkup='';window.scrollTo(0,0)}
+function showViewer(html,name,{remember=true}={}){
+ if(typeof html!=='string'||!html.trim()){showStatus('Die Datei ist leer oder konnte nicht gelesen werden.',true);return}
+ // This is a deliberate TRUSTED-HTML viewer: no sandbox so copy/paste features work in Safari.
+ // Only load HTML created by yourself or otherwise trusted.
+ activeMarkup=html;activeName=name||'HTML-Datei';$('fileName').childNodes[0].nodeValue=activeName;
+ home.classList.add('hidden');viewer.classList.remove('hidden');$('homeTop').hidden=false;$('footer').hidden=true;
+ frame.srcdoc=html;
+ if(remember) saveLast({name:activeName,html}).catch(()=>{});
+ window.scrollTo(0,0);
+}
+async function openFile(file){if(!file)return;try{const html=await file.text();showViewer(html,file.name)}catch(err){showStatus('Datei konnte nicht gelesen werden: '+err.message,true)}}
+function validHTML(file){return /\.html?$/i.test(file.name)||file.type==='text/html'}
+fileInput.addEventListener('change',()=>{const f=fileInput.files&&fileInput.files[0];if(f){if(!validHTML(f)){showStatus('Bitte eine .html- oder .htm-Datei auswählen.',true)}else openFile(f)}fileInput.value=''});
+$('chooseMain').onclick=()=>fileInput.click();$('chooseAgain').onclick=()=>fileInput.click();$('closeViewer').onclick=showHome;$('homeTop').onclick=showHome;$('reload').onclick=()=>{if(activeMarkup)frame.srcdoc=activeMarkup};
+const dz=$('dropZone');for(const eventName of ['dragover','dragenter'])dz.addEventListener(eventName,e=>{e.preventDefault();dz.classList.add('drag')});for(const eventName of ['dragleave','drop'])dz.addEventListener(eventName,e=>{e.preventDefault();dz.classList.remove('drag')});dz.addEventListener('drop',e=>{const f=e.dataTransfer?.files?.[0];if(f){if(validHTML(f))openFile(f);else showStatus('Bitte eine HTML-Datei auswählen.',true)}});
+function indexedDBOpen(){return new Promise((resolve,reject)=>{if(!('indexedDB'in window)){reject(Error('IndexedDB nicht verfügbar'));return}const req=indexedDB.open('html-oeffner-db',1);req.onupgradeneeded=()=>req.result.createObjectStore('files');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+async function saveLast(file){const db=await indexedDBOpen();return new Promise((resolve,reject)=>{const tx=db.transaction('files','readwrite');tx.objectStore('files').put(file,'last');tx.oncomplete=()=>{db.close();$('loadLast').hidden=false;resolve()};tx.onerror=()=>{db.close();reject(tx.error)}})}
+async function getLast(){const db=await indexedDBOpen();return new Promise((resolve,reject)=>{const tx=db.transaction('files','readonly');const req=tx.objectStore('files').get('last');req.onsuccess=()=>{db.close();resolve(req.result)};req.onerror=()=>{db.close();reject(req.error)}})}
+getLast().then(f=>{if(f&&f.html){$('loadLast').hidden=false;$('loadLast').title=f.name}}).catch(()=>{});
+$('loadLast').onclick=async()=>{try{const f=await getLast();if(f)showViewer(f.html,f.name,{remember:false})}catch(e){showStatus('Letzte Datei nicht verfügbar.',true)}};
+const demo='<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HTML-Test</title><style>body{font:16px -apple-system,Arial,sans-serif;margin:0;padding:38px 25px;background:#f8faff;color:#1c2b50}.card{max-width:560px;background:#fff;padding:26px;margin:0 auto;border-radius:18px;box-shadow:0 10px 40px #202c561a}h1{margin-top:0;font-size:25px}button{background:#314ac7;border:0;color:#fff;font-weight:700;padding:15px;border-radius:10px;cursor:pointer}p{line-height:1.6}#message{color:#116d46}</style><div class="card"><h1>✓ Deine HTML-Seite funktioniert</h1><p>JavaScript und CSS funktionieren. Über den Button kannst du prüfen, ob auch das Kopieren auf deinem iPad klappt.</p><button id="copy">Beispieltext kopieren</button><p id="message"></p></div><script>document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText("Der HTML-Öffner funktioniert!");document.getElementById("message").textContent="Kopiert! Du kannst den Text jetzt einfügen."}catch(e){const t=document.createElement("textarea");t.value="Der HTML-Öffner funktioniert!";document.body.appendChild(t);t.select();const ok=document.execCommand("copy");t.remove();document.getElementById("message").textContent=ok?"Kopiert!":"Bitte Text markieren und manuell kopieren."}}<\\/script></html>'.replace('<\\/script>','<'+'/script>');
+$('tryDemo').onclick=()=>showViewer(demo,'Testseite.html',{remember:false});
+const baseURL=location.origin+location.pathname.replace(/index\.html$/,'');
+$('shareCode').textContent=baseURL+'#b64=';$('clipURL').textContent=baseURL+'#clip';
+$('copyLink').onclick=async()=>{try{await navigator.clipboard.writeText(baseURL);showStatus('Adresse kopiert.')}catch(e){showStatus('Adresse: '+baseURL)}};
+// Shortcut input is base64 embedded in URL fragment: never sent to the GitHub web server.
+function decodeBase64(raw){let clean=decodeURIComponent(raw).replace(/\s/g,'');clean=clean.replace(/-/g,'+').replace(/_/g,'/');const bin=atob(clean);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder('utf-8',{fatal:true}).decode(bytes)}
+function openPastedText(raw){const s=raw.trim();if(!s){showStatus('Keine HTML-Daten gefunden.',true);return}let html=s;let name='Aus Zwischenablage.html';if(!/^\s*</.test(s)){try{html=decodeBase64(s);name='Aus Kurzbefehl.html'}catch(e){showStatus('Das sieht nicht nach HTML oder gültigem Base64 aus.',true);return}}if(!/^\s*</.test(html)){showStatus('Die übergebenen Daten enthalten anscheinend kein HTML.',true);return}showViewer(html,name)}
+$('clipboardRead').onclick=async()=>{try{if(!navigator.clipboard?.readText){$('manualWrap').classList.remove('hidden');showStatus('Automatisches Einfügen nicht verfügbar. Bitte manuell einfügen.',true);return}const t=await navigator.clipboard.readText();openPastedText(t)}catch(err){$('manualWrap').classList.remove('hidden');showStatus('Safari hat das Einfügen nicht erlaubt. Bitte unten manuell einfügen.',true)}};
+$('clipboardToggle').onclick=()=>$('manualWrap').classList.toggle('hidden');$('manualOpen').onclick=()=>openPastedText($('manualPaste').value);
+function consumeIncoming(){const fragment=location.hash;const cleanURL=location.pathname+location.search;if(fragment){try{history.replaceState(null,'',cleanURL)}catch(e){}}
+ if(fragment.startsWith('#b64=')){try{const html=decodeBase64(fragment.slice(5));if(!/^\s*</.test(html)){showStatus('Der Kurzbefehl hat keine HTML-Datei übergeben.',true);return}showViewer(html,'Aus Kurzbefehl.html')}catch(e){showStatus('Übergabe fehlgeschlagen. Bitte die Datei direkt auswählen. ('+e.message+')',true)}}
+ else if(fragment==='#clip'){$('clipboardPanel').classList.remove('hidden');showStatus('Kurzbefehl erkannt: HTML kann aus der Zwischenablage übernommen werden.')}
+}
+consumeIncoming();
+if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+</script>
+</body>
+</html>

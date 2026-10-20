@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "HTML öffnen – Mein HTML-Öffner",
+  "short_name": "HTML öffnen",
+  "description": "Lokale HTML-Dateien auf dem iPad ausführen – ohne Upload.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f8fc",
+  "theme_color": "#101935",
+  "lang": "de",
+  "icons": [
+    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
